@@ -20,18 +20,9 @@ pipeline {
             }
         }
 
-        stage('MVN SONARQUBE') {
+    stage('SonarQube Analysis') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'sonarqube-token', usernameVariable: 'SONAR_USER', passwordVariable: 'SONAR_TOKEN')]) {
-                        sh """
-                            mvn sonar:sonar \
-                                -Dsonar.host.url=http://192.168.33.10:9000 \
-                                -Dsonar.login=${SONAR_TOKEN} \
-                                -Dmaven.test.skip=true
-                        """
-                    }
-                }
+                sh 'mvn sonar:sonar -Dsonar.token=sqa_31eda82427697ed5ce90186e5a1fade9e89282b1 -Dmaven.test.skip=true'
             }
         }
 
