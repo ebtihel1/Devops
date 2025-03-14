@@ -1,23 +1,26 @@
 pipeline {
     agent any
+
     tools {
+        jdk 'JAVA_HOME'
         maven 'M2_HOME'
     }
+
     stages {
         stage('GIT') {
             steps {
-                git branch: 'master',
-                   url: 'https://github.com/ebtihel1/Devops.git'
-
+                git branch: 'main',
+                    url: 'https://github.com/ebtihel1/Devops.git'
             }
         }
-stage('Compile') {
+
+        stage('Compile Stage') {
             steps {
-               sh 'mvn compile'
-
+                sh 'mvn clean compile'
             }
         }
-stage('MVN SONARQUBE') {
+
+        stage('MVN SONARQUBE') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'sonarqube-token', usernameVariable: 'SONAR_USER', passwordVariable: 'SONAR_TOKEN')]) {
@@ -29,6 +32,12 @@ stage('MVN SONARQUBE') {
                         """
                     }
                 }
+            }
+        }
+
+        stage('docker image Stage') {
+            steps {
+                sh 'docker build -t timesheet:1.0.0 https://github.com/ebtihel1/Devops.git'
             }
         }
     }
